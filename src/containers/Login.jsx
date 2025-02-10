@@ -25,12 +25,19 @@ const Container = styled.div`
 
 const FormContainer = styled.div`
   display: flex;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.548);
   border-radius: 20px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   width: 800px;
   position: relative;
+  align-items: center;
+
+  @media (max-width: 480px) {
+   height: 100vh;
+
+   background: rgba(255, 255, 255, 0.253);
+  }
 `;
 
 const Form = styled.form`
@@ -38,6 +45,10 @@ const Form = styled.form`
   flex-direction: column;
   padding: 2rem;
   width: 50%;
+
+  @media (max-width: 480px) {
+   width: 190%;
+  }
 `;
 
 const Input = styled.input`
@@ -137,7 +148,7 @@ const Login = () => {
           <FaHome /> {/* Ícone de Home */}
         </HomeButton>
         <Form onSubmit={handleLogin}>
-          <h2>Login Nutricionista</h2>
+          <h2>LOGIN</h2>
           <Input
             type="email"
             placeholder="Email"
