@@ -136,9 +136,8 @@ const Login = () => {
       alert("Credenciais inválidas");
     }
   };
-
   const handleGoBack = () => {
-    navigate(-1); // Volta para a página anterior
+    window.location.href = "https://dayanesouzanutri.netlify.app/"; // Link externo
   };
 
   return (
