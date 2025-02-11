@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
 
-
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -31,7 +30,6 @@ const ListHeader = styled.h2`
   margin-bottom: 20px;
   font-size: 2rem;
   font-weight: bold;
-
 `;
 
 const ListItem = styled.div`
@@ -153,9 +151,10 @@ const FormContainer = styled.div`
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: #D8DEE9;
   margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const Form = styled.form`
@@ -165,9 +164,16 @@ const Form = styled.form`
 
 const Input = styled.input`
   margin-bottom: 10px;
-  padding: 8px;
+  padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #007bff;
+    outline: none;
+  }
 `;
 
 const Button = styled.button`
@@ -175,18 +181,25 @@ const Button = styled.button`
   background-color: #003c2a;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #00241a;
+  }
 `;
 
 const TextContent = styled.h1`
-display: flex;
-align-items: center;
-justify-content: center;
-margin-top: 10px;
-margin-bottom: 15px;
-font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  font-family: 'Cambria', 'Cochin', 'Georgia', 'Times', 'Times New Roman', serif;
+  color: #043647;
+`;
 
 const AgendamentosList = () => {
   const [agendamentos, setAgendamentos] = useState([]);
@@ -206,16 +219,16 @@ const AgendamentosList = () => {
   const [observacoes, setObservacoes] = useState('');
 
   const handleSubmit = async (e) => {
-      e.preventDefault();
-      const agendamento = { nomePaciente, emailPaciente, dataHora, observacoes };
-      await axios.post('https://scheduling-system-three.vercel.app/api/agendamentos', agendamento);
-      alert('Agendamento criado com sucesso!');
+    e.preventDefault();
+    const agendamento = { nomePaciente, emailPaciente, dataHora, observacoes };
+    await axios.post('http://localhost:8090/api/agendamentos', agendamento);
+    alert('Agendamento criado com sucesso!');
   };
 
   useEffect(() => {
     const fetchAgendamentos = async () => {
       try {
-        const response = await axios.get('https://scheduling-system-three.vercel.app/api/agendamentos');
+        const response = await axios.get('http://localhost:8090/api/agendamentos');
         setAgendamentos(response.data);
       } catch (error) {
         console.error('Erro ao buscar agendamentos:', error);
@@ -252,7 +265,7 @@ const AgendamentosList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://scheduling-system-three.vercel.app/api/agendamentos/${id}`);
+      await axios.delete(`http://localhost:8090/api/agendamentos/${id}`);
       setAgendamentos(agendamentos.filter((agendamento) => agendamento.id !== id));
     } catch (error) {
       console.error('Erro ao excluir agendamento:', error);
@@ -280,7 +293,7 @@ const AgendamentosList = () => {
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`https://scheduling-system-three.vercel.app/api/agendamentos/${editing}`, formData);
+      await axios.put(`http://localhost:8090/api/agendamentos/${editing}`, formData);
       setAgendamentos(agendamentos.map((agendamento) =>
         agendamento.id === editing ? { ...agendamento, ...formData } : agendamento
       ));
@@ -309,91 +322,88 @@ const AgendamentosList = () => {
 
   return (
     <>
-     <FormContainer>
-            <TextContent>
-                CADASTRO DE CONSULTA
-            </TextContent>
-            <Form onSubmit={handleSubmit}>
-                <Input
-                    type="text"
-                    placeholder="Nome do Paciente"
-                    value={nomePaciente}
-                    onChange={(e) => setNomePaciente(e.target.value)}
-                />
-                <Input
-                    type="email"
-                    placeholder="Email do Paciente"
-                    value={emailPaciente}
-                    onChange={(e) => setEmailPaciente(e.target.value)}
-                />
-                <Input
-                    type="datetime-local"
-                    value={dataHora}
-                    onChange={(e) => setDataHora(e.target.value)}
-                />
-                <Input
-                    type="text"
-                    placeholder="Observações"
-                    value={observacoes}
-                    onChange={(e) => setObservacoes(e.target.value)}
-                />
-                <Button type="submit">Agendar</Button>
-            </Form>
-        </FormContainer>
-
-    <ListContainer>
-      <ListHeader>AGENDAMENTOS</ListHeader>
-      {notification && <Notification>{notification}</Notification>}
-      {agendamentos.map((agendamento) => (
-        <ListItem key={agendamento.id}>
-          <h3>{agendamento.nomePaciente}</h3>
-          <p><strong>Email:</strong> {agendamento.emailPaciente}</p>
-          <p><strong>Data e Hora:</strong> {new Date(agendamento.dataHora).toLocaleString()}</p>
-          <p><strong>Observações:</strong> {agendamento.observacoes}</p>
-          <Timer>
-            <strong>Tempo restante:</strong> {calculateTimeLeft(agendamento.dataHora)}
-          </Timer>
-          <ButtonContainer>
-            <EditButton onClick={() => handleEditClick(agendamento)}>Editar</EditButton>
-            <DeleteButton onClick={() => handleDelete(agendamento.id)}>Excluir</DeleteButton>
-          </ButtonContainer>
-        </ListItem>
-      ))}
-      {editing && (
-        <EditForm onSubmit={handleSubmitEdit}>
-          <h3>Editar Agendamento</h3>
-          <label>Nome do Paciente</label>
-          <input
+      <FormContainer>
+        <TextContent>CADASTRO DE CONSULTA</TextContent>
+        <Form onSubmit={handleSubmit}>
+          <Input
             type="text"
-            name="nomePaciente"
-            value={formData.nomePaciente}
-            onChange={handleFormChange}
+            placeholder="Nome do Paciente"
+            value={nomePaciente}
+            onChange={(e) => setNomePaciente(e.target.value)}
           />
-          <label>Email do Paciente</label>
-          <input
+          <Input
             type="email"
-            name="emailPaciente"
-            value={formData.emailPaciente}
-            onChange={handleFormChange}
+            placeholder="Email do Paciente"
+            value={emailPaciente}
+            onChange={(e) => setEmailPaciente(e.target.value)}
           />
-          <label>Data e Hora</label>
-          <input
+          <Input
             type="datetime-local"
-            name="dataHora"
-            value={formData.dataHora}
-            onChange={handleFormChange}
+            value={dataHora}
+            onChange={(e) => setDataHora(e.target.value)}
           />
-          <label>Observações</label>
-          <textarea
-            name="observacoes"
-            value={formData.observacoes}
-            onChange={handleFormChange}
+          <Input
+            type="text"
+            placeholder="Observações"
+            value={observacoes}
+            onChange={(e) => setObservacoes(e.target.value)}
           />
-          <button type="submit">Salvar Alterações</button>
-        </EditForm>
-      )}
-    </ListContainer>
+          <Button type="submit">Agendar</Button>
+        </Form>
+      </FormContainer>
 
+      <ListContainer>
+        <ListHeader>AGENDAMENTOS</ListHeader>
+        {notification && <Notification>{notification}</Notification>}
+        {agendamentos.map((agendamento) => (
+          <ListItem key={agendamento.id}>
+            <h3>{agendamento.nomePaciente}</h3>
+            <p><strong>Email:</strong> {agendamento.emailPaciente}</p>
+            <p><strong>Data e Hora:</strong> {new Date(agendamento.dataHora).toLocaleString()}</p>
+            <p><strong>Observações:</strong> {agendamento.observacoes}</p>
+            <Timer>
+              <strong>Tempo restante:</strong> {calculateTimeLeft(agendamento.dataHora)}
+            </Timer>
+            <ButtonContainer>
+              <EditButton onClick={() => handleEditClick(agendamento)}>Editar</EditButton>
+              <DeleteButton onClick={() => handleDelete(agendamento.id)}>Excluir</DeleteButton>
+            </ButtonContainer>
+          </ListItem>
+        ))}
+        {editing && (
+          <EditForm onSubmit={handleSubmitEdit}>
+            <h3>Editar Agendamento</h3>
+            <label>Nome do Paciente</label>
+            <input
+              type="text"
+              name="nomePaciente"
+              value={formData.nomePaciente}
+              onChange={handleFormChange}
+            />
+            <label>Email do Paciente</label>
+            <input
+              type="email"
+              name="emailPaciente"
+              value={formData.emailPaciente}
+              onChange={handleFormChange}
+            />
+            <label>Data e Hora</label>
+            <input
+              type="datetime-local"
+              name="dataHora"
+              value={formData.dataHora}
+              onChange={handleFormChange}
+            />
+            <label>Observações</label>
+            <textarea
+              name="observacoes"
+              value={formData.observacoes}
+              onChange={handleFormChange}
+            />
+            <button type="submit">Salvar Alterações</button>
+          </EditForm>
+        )}
+      </ListContainer>
     </>
   );
 };
