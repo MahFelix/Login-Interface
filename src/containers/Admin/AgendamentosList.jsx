@@ -217,6 +217,7 @@ const AgendamentosList = () => {
   const [emailPaciente, setEmailPaciente] = useState('');
   const [dataHora, setDataHora] = useState('');
   const [observacoes, setObservacoes] = useState('');
+  const [erro, setErro] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -232,11 +233,13 @@ const AgendamentosList = () => {
         setAgendamentos(response.data);
       } catch (error) {
         console.error('Erro ao buscar agendamentos:', error);
+        setErro('Ocorreu um erro ao buscar os agendamentos. Tente novamente mais tarde.');
       }
     };
 
     fetchAgendamentos();
-  }, []);
+  }, []); // O array vazio garante que a requisição seja feita apenas uma vez ao montar o componente
+
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -324,6 +327,7 @@ const AgendamentosList = () => {
     <>
       <FormContainer>
         <TextContent>CADASTRO DE CONSULTA</TextContent>
+        {erro && <p>{erro}</p>} 
         <Form onSubmit={handleSubmit}>
           <Input
             type="text"
