@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://scheduling-system-three.vercel.app/";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://agendamento-52fm.onrender.com/api/agendamentos";
 
 export async function fetchData(endpoint) {
   try {
