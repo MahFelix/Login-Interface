@@ -222,7 +222,7 @@ const AgendamentosList = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const agendamento = { nomePaciente, emailPaciente, dataHora, observacoes };
-    await axios.post('https://agendamento-52fm.onrender.com/api', agendamento);
+    await axios.post('https://agendamento-52fm.onrender.com/api/agendamentos', agendamento);
     alert('Agendamento criado com sucesso!');
   };
 
