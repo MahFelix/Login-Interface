@@ -218,6 +218,7 @@ const AgendamentosList = () => {
   const [dataHora, setDataHora] = useState('');
   const [observacoes, setObservacoes] = useState('');
   const [erro, setErro] = useState(null);
+  const [loading, setLoading] = useState(true); // Controle de loading
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -234,12 +235,13 @@ const AgendamentosList = () => {
       } catch (error) {
         console.error('Erro ao buscar agendamentos:', error);
         setErro('Ocorreu um erro ao buscar os agendamentos. Tente novamente mais tarde.');
+      } finally {
+        setLoading(false); // Garantir que loading será alterado após a requisição
       }
     };
 
     fetchAgendamentos();
-  }, []); // O array vazio garante que a requisição seja feita apenas uma vez ao montar o componente
-
+  }, []); 
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -327,6 +329,7 @@ const AgendamentosList = () => {
     <>
       <FormContainer>
         <TextContent>CADASTRO DE CONSULTA</TextContent>
+        {loading && <p>Carregando agendamentos...</p>} {/* Exibe uma mensagem de loading */}
         {erro && <p>{erro}</p>} 
         <Form onSubmit={handleSubmit}>
           <Input
