@@ -221,14 +221,14 @@ const AgendamentosList = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const agendamento = { nomePaciente, emailPaciente, dataHora, observacoes };
-    await axios.post('http://localhost:8090/api/agendamentos', agendamento);
+    await axios.post('https://agendamento-52fm.onrender.com/api/agendamentos', agendamento);
     alert('Agendamento criado com sucesso!');
   };
 
   useEffect(() => {
     const fetchAgendamentos = async () => {
       try {
-        const response = await axios.get('http://localhost:8090/api/agendamentos');
+        const response = await axios.get('https://agendamento-52fm.onrender.com/api/agendamentos');
         setAgendamentos(response.data);
       } catch (error) {
         console.error('Erro ao buscar agendamentos:', error);
@@ -265,7 +265,7 @@ const AgendamentosList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:8090/api/agendamentos/${id}`);
+      await axios.delete(`https://agendamento-52fm.onrender.com/api/agendamentos/${id}`);
       setAgendamentos(agendamentos.filter((agendamento) => agendamento.id !== id));
     } catch (error) {
       console.error('Erro ao excluir agendamento:', error);
@@ -293,7 +293,7 @@ const AgendamentosList = () => {
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:8090/api/agendamentos/${editing}`, formData);
+      await axios.put(`https://agendamento-52fm.onrender.com/api/agendamentos/${editing}`, formData);
       setAgendamentos(agendamentos.map((agendamento) =>
         agendamento.id === editing ? { ...agendamento, ...formData } : agendamento
       ));
