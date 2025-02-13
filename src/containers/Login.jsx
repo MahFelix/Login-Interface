@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import confetti from "canvas-confetti";
-import { FaHome } from "react-icons/fa"; // Ícone de Home
+import { FaHome, FaEye, FaEyeSlash } from "react-icons/fa"; // Ícones de Home e visibilidade de senha
 
 // Imagem de fundo relacionada à nutrição
 import backgroundImage from "../../public/foto.webp"; // Substitua pelo caminho da sua imagem
@@ -35,7 +35,6 @@ const FormContainer = styled.div`
 
   @media (max-width: 480px) {
    height: 100vh;
-
    background: rgba(255, 255, 255, 0.253);
   }
 `;
@@ -112,9 +111,39 @@ const HomeButton = styled.button`
   }
 `;
 
+const PasswordContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+const TogglePasswordButton = styled.button`
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #f29f05;
+  font-size: 16px;
+`;
+
+const ChangePasswordLink = styled.a`
+  margin-top: 1rem;
+  color: #000000;
+  text-decoration: none;
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const navigate = useNavigate();
 
@@ -136,8 +165,13 @@ const Login = () => {
       alert("Credenciais inválidas");
     }
   };
+
   const handleGoBack = () => {
     window.location.href = "https://dayanesouzanutri.netlify.app/"; // Link externo
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -155,14 +189,20 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <Input
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <PasswordContainer>
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <TogglePasswordButton onClick={togglePasswordVisibility}>
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </TogglePasswordButton>
+          </PasswordContainer>
           <Button type="submit">Entrar</Button>
+          <ChangePasswordLink to="/alterar-senha">Alterar Senha</ChangePasswordLink>
         </Form>
         <ImageSide />
       </FormContainer>
