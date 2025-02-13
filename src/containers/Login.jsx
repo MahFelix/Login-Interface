@@ -150,7 +150,7 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    if (email === "dayanesouzanutri@email.com" && password === "202512") {
+    if (email === "teste@email.com" && password === "123") {
       localStorage.setItem("authToken", "admin"); // Simulação de token
       setShowConfetti(true);
       confetti({
